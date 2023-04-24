@@ -14,11 +14,17 @@ public class OneOf<T1, T2>
     public static implicit operator OneOf<T1, T2>(T2 value) =>
         new OneOf<T1, T2>(value);
 
+    public static implicit operator T1(OneOf<T1, T2> oneOfObject) =>
+        oneOfObject.valueOfT1;
+
+    public static implicit operator T2(OneOf<T1, T2> oneOfObject) =>
+        oneOfObject.valueOfT2;
+
     public Tout Match<Tout>(Func<T1, Tout> f1, Func<T2, Tout> f2)
         where Tout : class
     {
-        if (valueOfT1 is not null) return f1(valueOfT1);
-        if (valueOfT2  is not null) return f2(valueOfT2);
+        if (valueOfT1?.Equals(default(T1)) == false) return f1(this.valueOfT1);
+        if (valueOfT2?.Equals(default(T2)) == false) return f2(this.valueOfT2);
 
         throw new InvalidOperationException("Invalid Match!");
     }
