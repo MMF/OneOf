@@ -19,12 +19,21 @@ public class OneOf<T1, T2, T3>
     public static implicit operator OneOf<T1, T2, T3>(T3 value) =>
         new OneOf<T1, T2, T3>(value);
 
+    public static implicit operator T1(OneOf<T1, T2, T3> oneOfObject) =>
+        oneOfObject.valueOfT1;
+
+    public static implicit operator T2(OneOf<T1, T2, T3> oneOfObject) =>
+        oneOfObject.valueOfT2;
+
+    public static implicit operator T3(OneOf<T1, T2, T3> oneOfObject) =>
+        oneOfObject.valueOfT3;
+
     public Tout Match<Tout>(Func<T1, Tout> f1, Func<T2, Tout> f2, Func<T3, Tout> f3)
         where Tout : class
     {
-        if (valueOfT1 is not null) return f1(valueOfT1);
-        if (valueOfT2 is not null) return f2(valueOfT2);
-        if (valueOfT3 is not null) return f3(valueOfT3);
+        if (valueOfT1?.Equals(default(T1)) == false) return f1(valueOfT1);
+        if (valueOfT2?.Equals(default(T2)) == false) return f2(valueOfT2);
+        if (valueOfT3?.Equals(default(T3)) == false) return f3(valueOfT3);
 
         throw new InvalidOperationException("Invalid Match!");
     }
